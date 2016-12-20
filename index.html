@@ -40,7 +40,31 @@
 
 <body>
     <script>
-        initFacebook();
+        window.fbAsyncInit = function () {
+            FB.init({
+                //appId: '721208764722489'
+                appId: '721252094718156'
+                , xfbml: true
+                , version: 'v2.8'
+            });
+            FB.AppEvents.logPageView();
+            FB.getLoginStatus(function (response) {
+                if (response.status === 'connected') {
+                    console.log('Logged in.');
+                    updateWasterName(response);
+                }
+            });
+        };
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+                return;
+            }
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
     </script>
     <div class="site-wrapper">
         <div class="site-wrapper-inner">
@@ -63,7 +87,7 @@
                     <div class="row">
                         <p id="timer" style="font-size: 26px;">TIMER</p>
                     </div>
-                    <p class="lead"> <a href="#" id="wastersClick" class="btn btn-lg btn-default" onclick="watersAdd();">MORE <font style="color: red">Wasters</font></a> <a href="#" id="wastersRemove" class="btn btn-lg btn-default" onclick="wastersRemove();">Leave <font style="color: red">Wasters</font> alone</a> </p>
+                    <p class="lead"> <a href="#" id="wastersClick" class="btn btn-lg btn-default" onclick="wastersAdd();">MORE <font style="color: red">Wasters</font></a> <a href="#" id="wastersRemove" class="btn btn-lg btn-default" onclick="wastersRemove();">Leave <font style="color: red">Wasters</font> alone</a> </p>
                     <p><a href="#" id="wastersRemove" class="btn btn-lg btn-default" onclick="wastersReset();">Reset <font style="color: red">Wasters</font></a></p>
                     <p>
                         <fb:login-button scope="public_profile,email" onlogin="facebookLogin();"> </fb:login-button>
