@@ -22,6 +22,7 @@
     <script src="lib/js/ie-emulation-modes-warning.js"></script>
     <script src="lib/js/jquery-3.1.1.min.js"></script>
     <script src="lib/js/oauth.js"></script>
+    <script src="lib/js/jquery.cookie.js"></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -31,13 +32,36 @@
         var Timer;
         var TotalSeconds;
         var Wasters_1;
+        var FontSize;
         $(document).ready(function () {
-            CreateTimer("timer", 0, 1);
+            var lastSession = Cookies.get('last_session');
+            var totalSeconds = 0;
+            var wasters = 1;
+            var fontSize = 14;
+            if (!$.isEmptyObject(lastSession)) {
+                lastSession = JSON.parse(lastSession);
+                totalSeconds = parseInt(lastSession.total_seconds);
+                if (totalSeconds == 'NaN') {
+                    totalSeconds = 0
+                }
+                wasters = parseInt(lastSession.wasters);
+                if (wasters == 'NaN') {
+                    wasters = 1
+                }
+                fontSize = parseInt(lastSession.font_size);
+                if (fontSize == 'NaN') {
+                    fontSize = 14
+                }
+            }
+            CreateTimer("timer", totalSeconds, wasters, fontSize);
         });
 
-        function CreateTimer(TimerID, Time, Wasters) {
+        function CreateTimer(TimerID, Time, Wasters, fontSize) {
             Timer = $('#' + TimerID + '');
             TotalSeconds = Time;
+            FontSize = fontSize;
+            $('#wastersCount').css('font-size', FontSize + 'px');
+            $('#wastersCount').text(Wasters);
             Wasters_1 = Wasters;
             UpdateTimer();
             setTimeout(function () {
@@ -88,7 +112,18 @@
             var minutes = parseInt(TotalSeconds / 60) % 60;
             var seconds = TotalSeconds % 60;
             var result = (hours < 10 ? "0" + hours : hours) + " : " + (minutes < 10 ? "0" + minutes : minutes) + " : " + (seconds < 10 ? "0" + seconds : seconds) + " sec";
+            updateLastSession();
             Timer.text(result);
+        }
+
+        function updateLastSession() {
+            var fontSize = parseInt($('#wastersCount').css('font-size'));
+            var lastSesstion = {
+                'total_seconds': TotalSeconds
+                , 'wasters': Wasters_1
+                , 'font_size': fontSize
+            }
+            Cookies.set('last_session', lastSesstion);
         }
 
         function updateWasterName(response) {
@@ -128,7 +163,8 @@
         function initFacebook() {
             window.fbAsyncInit = function () {
                 FB.init({
-                    appId: '721208764722489'
+                    //                    appId: '721208764722489'
+                    appId: '721252094718156'
                     , xfbml: true
                     , version: 'v2.8'
                 });
