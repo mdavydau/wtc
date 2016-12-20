@@ -74,9 +74,8 @@
             var wasters = parseInt(wastersCount.text());
             wasters += 1;
             wastersCount.text(wasters);
-            var fontSize = parseInt(wastersCount.css('font-size'));
-            if (fontSize < 80) {
-                wastersCount.css('font-size', ++fontSize + 'px');
+            if (FontSize < 80) {
+                FontSize += 1;
             }
             updateTick();
         }
@@ -88,22 +87,23 @@
                 wasters -= 1;
                 wastersCount.text(wasters);
             }
-            var fontSize = parseInt(wastersCount.css('font-size'));
-            if (fontSize > 16) {
-                wastersCount.css('font-size', --fontSize + 'px');
+            if (FontSize > 16) {
+                FontSize -= 1;
             }
             updateTick();
         }
 
         function updateTick() {
             Wasters_1 = parseInt($('#wastersCount').text());
+            $('#wastersCount').css('font-size', FontSize + 'px');
+            updateLastSession();
         }
 
         function Tick() {
             TotalSeconds += Wasters_1;
             UpdateTimer();
             setTimeout(function () {
-                Tick()
+                Tick();
             }, 1000);
         }
 
@@ -116,12 +116,21 @@
             Timer.text(result);
         }
 
+        function wastersReset() {
+            TotalSeconds = 0;
+            Wasters_1 = 1;
+            $('#wastersCount').text(Wasters_1);
+            FontSize = 14;
+            updateTick();
+            UpdateTimer();
+        }
+
         function updateLastSession() {
             var fontSize = parseInt($('#wastersCount').css('font-size'));
             var lastSesstion = {
                 'total_seconds': TotalSeconds
                 , 'wasters': Wasters_1
-                , 'font_size': fontSize
+                , 'font_size': FontSize
             }
             Cookies.set('last_session', lastSesstion);
         }
@@ -163,8 +172,9 @@
         function initFacebook() {
             window.fbAsyncInit = function () {
                 FB.init({
-                                        appId: '721208764722489'
-//                    appId: '721252094718156'
+                    appId: '721208764722489'
+                        //                    appId: '721252094718156'
+
                     , xfbml: true
                     , version: 'v2.8'
                 });
@@ -211,6 +221,7 @@
                         <p id="timer" style="font-size: 26px;">TIMER</p>
                     </div>
                     <p class="lead"> <a href="#" id="wastersClick" class="btn btn-lg btn-default" onclick="watersAdd();">MORE <font style="color: red">Wasters</font></a> <a href="#" id="wastersRemove" class="btn btn-lg btn-default" onclick="wastersRemove();">Leave <font style="color: red">Wasters</font> alone</a> </p>
+                    <p><a href="#" id="wastersRemove" class="btn btn-lg btn-default" onclick="wastersReset();">Reset <font style="color: red">Wasters</font></a></p>
                 </div>
             </div>
         </div>
