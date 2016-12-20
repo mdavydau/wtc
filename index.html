@@ -45,6 +45,13 @@
 
         OAuth.popup('facebook')
     .done(function(result) {
+            $.getJSON('https://graph.facebook.com/me?access_token=' + result.access_token, function(data){
+            var id = data.id;
+            var name = data.name;
+
+                $('#waster').text(name);
+            });
+
       //use result.access_token in your API request
       //or use result.get|post|put|del|patch|me methods (see below)
     })
@@ -136,7 +143,7 @@
           <h3 class="masthead-brand"><font style="color: red">W</font>TC</h3>
           <nav>
             <ul class="nav masthead-nav">
-              <li class="active"><a href="#">Go Home! You are <font style="color: red">wasting</font> your time</a></li>
+              <li class="active"><a href="#">Go Home! You are <font style="color: red">wasting</font> your time <span id="waster" style="color:green;"></span></a></li>
             </ul>
           </nav>
         </div>
