@@ -158,6 +158,15 @@
                     console.log('Logged in.');
                     updateWasterName(response);
                 }
+            });
+        }
+
+        function facebookLogin() {
+            FB.getLoginStatus(function (response) {
+                if (response.status === 'connected') {
+                    console.log('Logged in.');
+                    updateWasterName(response);
+                }
                 else {
                     FB.login(function (response) {
                         if (response.status === 'connected') {
@@ -179,9 +188,8 @@
         function initFacebook() {
             window.fbAsyncInit = function () {
                 FB.init({
-                    appId: '721208764722489'
-//                                            appId: '721252094718156'
-
+                    //                    appId: '721208764722489'
+                    appId: '721252094718156'
                     , xfbml: true
                     , version: 'v2.8'
                 });
@@ -214,7 +222,7 @@
                         <h3 class="masthead-brand"><font style="color: red">W</font>TC</h3>
                         <nav>
                             <ul class="nav masthead-nav">
-                                <li class="active"><a href="#">Go Home! You are <font style="color: red">wasting</font> your time <br/><span id="waster" style="color:green;"></span></a></li>
+                                <li class="active"><a href="#">Go Home! You are <font style="color: red">wasting</font> your time <br/><span id="waster" style="color:green;"></span></a> </li>
                             </ul>
                         </nav>
                     </div>
@@ -229,6 +237,9 @@
                     </div>
                     <p class="lead"> <a href="#" id="wastersClick" class="btn btn-lg btn-default" onclick="watersAdd();">MORE <font style="color: red">Wasters</font></a> <a href="#" id="wastersRemove" class="btn btn-lg btn-default" onclick="wastersRemove();">Leave <font style="color: red">Wasters</font> alone</a> </p>
                     <p><a href="#" id="wastersRemove" class="btn btn-lg btn-default" onclick="wastersReset();">Reset <font style="color: red">Wasters</font></a></p>
+                    <p>
+                        <fb:login-button scope="public_profile,email" onlogin="facebookLogin();"> </fb:login-button>
+                    </p>
                 </div>
             </div>
         </div>
