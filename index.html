@@ -25,6 +25,7 @@
   <script src="lib/js/ie8-responsive-file-warning.js"></script><![endif]-->
   <script src="lib/js/ie-emulation-modes-warning.js"></script>
   <script src="lib/js/jquery-3.1.1.min.js"></script>
+    <script src="lib/js/oauth.js"></script>
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
@@ -39,6 +40,17 @@
 
     $(document).ready(function () {
       CreateTimer("timer", 0, 1);
+
+        OAuth.initialize('NfEz4mgOar2krAGSUVlWg9a65pk');
+
+        OAuth.popup('facebook')
+    .done(function(result) {
+      //use result.access_token in your API request
+      //or use result.get|post|put|del|patch|me methods (see below)
+    })
+    .fail(function (err) {
+      //handle error with err
+});
     });
 
 
