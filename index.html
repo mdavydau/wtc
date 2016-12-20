@@ -1,181 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <!--<link rel="icon" href="lib/favicon.ico">-->
-
-  <title>Waste Time Counter</title>
-
-  <!-- Bootstrap core CSS -->
-  <link href="lib/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <link href="lib/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-
-  <!-- Custom styles for this template -->
-  <link href="cover.css" rel="stylesheet">
-
-  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-  <!--[if lt IE 9]>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="lib/favicon.ico">-->
+    <title>Waste Time Counter</title>
+    <!-- Bootstrap core CSS -->
+    <link href="lib/css/bootstrap.min.css" rel="stylesheet">
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="lib/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet">
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
   <script src="lib/js/ie8-responsive-file-warning.js"></script><![endif]-->
-  <script src="lib/js/ie-emulation-modes-warning.js"></script>
-  <script src="lib/js/jquery-3.1.1.min.js"></script>
+    <script src="lib/js/ie-emulation-modes-warning.js"></script>
+    <script src="lib/js/jquery-3.1.1.min.js"></script>
     <script src="lib/js/oauth.js"></script>
-
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!--[if lt IE 9]>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-
-  <script type="text/javascript">
-    var Timer;
-    var TotalSeconds;
-    var Wasters_1;
-
-    $(document).ready(function () {
-      CreateTimer("timer", 0, 1);
-
-        OAuth.initialize('NfEz4mgOar2krAGSUVlWg9a65pk');
-
-        OAuth.popup('facebook')
-    .done(function(result) {
-            $.getJSON('https://graph.facebook.com/me?access_token=' + result.access_token, function(data){
-            var id = data.id;
-            var name = data.name;
-
-                $('#waster').text(name);
+    <script type="text/javascript">
+        var Timer;
+        var TotalSeconds;
+        var Wasters_1;
+        $(document).ready(function () {
+            CreateTimer("timer", 0, 1);
+            OAuth.initialize('NfEz4mgOar2krAGSUVlWg9a65pk');
+            OAuth.popup('facebook').done(function (result) {
+                $.getJSON('https://graph.facebook.com/me?access_token=' + result.access_token, function (data) {
+                    var id = data.id;
+                    var name = data.name;
+                    $('#waster').text(name);
+                });
+                //use result.access_token in your API request
+                //or use result.get|post|put|del|patch|me methods (see below)
+            }).fail(function (err) {
+                //handle error with err
             });
+        });
 
-      //use result.access_token in your API request
-      //or use result.get|post|put|del|patch|me methods (see below)
-    })
-    .fail(function (err) {
-      //handle error with err
-});
-    });
+        function CreateTimer(TimerID, Time, Wasters) {
+            Timer = $('#' + TimerID + '');
+            TotalSeconds = Time;
+            Wasters_1 = Wasters;
+            UpdateTimer();
+            setTimeout(function () {
+                Tick()
+            }, 1000);
+        }
 
+        function watersAdd() {
+            var wastersCount = $('#wastersCount');
+            var wasters = parseInt(wastersCount.text());
+            wasters += 1;
+            wastersCount.text(wasters);
+            var fontSize = parseInt(wastersCount.css('font-size'));
+            if (fontSize < 80) {
+                wastersCount.css('font-size', ++fontSize + 'px');
+            }
+            updateTick();
+        }
 
-    function CreateTimer(TimerID, Time, Wasters) {
+        function wastersRemove() {
+            var wastersCount = $('#wastersCount');
+            var wasters = parseInt(wastersCount.text());
+            if (wasters > 1) {
+                wasters -= 1;
+                wastersCount.text(wasters);
+            }
+            var fontSize = parseInt(wastersCount.css('font-size'));
+            if (fontSize > 16) {
+                wastersCount.css('font-size', --fontSize + 'px');
+            }
+            updateTick();
+        }
 
-      Timer = $('#' + TimerID + '');
+        function updateTick() {
+            Wasters_1 = parseInt($('#wastersCount').text());
+        }
 
-      TotalSeconds = Time;
-      Wasters_1 = Wasters;
+        function Tick() {
+            TotalSeconds += Wasters_1;
+            UpdateTimer();
+            setTimeout(function () {
+                Tick()
+            }, 1000);
+        }
 
-      UpdateTimer();
-      setTimeout(function () {
-        Tick()
-      }, 1000);
-    }
-
-    function watersAdd() {
-      var wastersCount = $('#wastersCount');
-      var wasters = parseInt(wastersCount.text());
-
-      wasters += 1;
-      wastersCount.text(wasters);
-
-      var fontSize = parseInt(wastersCount.css('font-size'));
-      if (fontSize < 80) {
-        wastersCount.css('font-size', ++fontSize + 'px');
-      }
-
-      updateTick();
-    }
-
-    function wastersRemove() {
-      var wastersCount = $('#wastersCount');
-      var wasters = parseInt(wastersCount.text());
-
-      if (wasters > 1) {
-        wasters -= 1;
-        wastersCount.text(wasters);
-      }
-
-      var fontSize = parseInt(wastersCount.css('font-size'));
-      if (fontSize > 16) {
-        wastersCount.css('font-size', --fontSize + 'px');
-      }
-
-      updateTick();
-    }
-
-    function updateTick() {
-      Wasters_1 = parseInt($('#wastersCount').text());
-    }
-
-    function Tick() {
-      TotalSeconds += Wasters_1;
-      UpdateTimer();
-      setTimeout(function () {
-        Tick()
-      }, 1000);
-    }
-
-    function UpdateTimer() {
-      var hours = parseInt(TotalSeconds / 3600) % 24;
-      var minutes = parseInt(TotalSeconds / 60) % 60;
-      var seconds = TotalSeconds % 60;
-
-      var result = (hours < 10 ? "0" + hours : hours) + " : " + (minutes < 10 ? "0" + minutes : minutes) + " : " + (seconds < 10 ? "0" + seconds : seconds) + " sec";
-
-      Timer.text(result);
-    }
-  </script>
+        function UpdateTimer() {
+            var hours = parseInt(TotalSeconds / 3600) % 24;
+            var minutes = parseInt(TotalSeconds / 60) % 60;
+            var seconds = TotalSeconds % 60;
+            var result = (hours < 10 ? "0" + hours : hours) + " : " + (minutes < 10 ? "0" + minutes : minutes) + " : " + (seconds < 10 ? "0" + seconds : seconds) + " sec";
+            Timer.text(result);
+        }
+    </script>
 </head>
 
 <body>
-
-<div class="site-wrapper">
-
-  <div class="site-wrapper-inner">
-
-    <div class="cover-container">
-
-      <div class="masthead clearfix">
-        <div class="inner">
-          <h3 class="masthead-brand"><font style="color: red">W</font>TC</h3>
-          <nav>
-            <ul class="nav masthead-nav">
-              <li class="active"><a href="#">Go Home! You are <font style="color: red">wasting</font> your time <span id="waster" style="color:green;"></span></a></li>
-            </ul>
-          </nav>
+    <div class="site-wrapper">
+        <div class="site-wrapper-inner">
+            <div class="cover-container">
+                <div class="masthead clearfix">
+                    <div class="inner">
+                        <h3 class="masthead-brand"><font style="color: red">W</font>TC</h3>
+                        <nav>
+                            <ul class="nav masthead-nav">
+                                <li class="active"><a href="#">Go Home! You are <font style="color: red">wasting</font> your time <span id="waster" style="color:green;"></span></a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="inner cover">
+                    <h1 class="cover-heading"><font style="color: red">Waste</font> Time Counter.</h1>
+                    <p class="lead">Let's <font style="color: red">waste</font> together!</p>
+                    <p>Number Of <font style="color: red">Wasters</font></p>
+                    <p id="wastersCount" style="color:white;font-size: 16px;">1</p>
+                    <div class="row">
+                        <p id="timer" style="font-size: 26px;">TIMER</p>
+                    </div>
+                    <p class="lead"> <a href="#" id="wastersClick" class="btn btn-lg btn-default" onclick="watersAdd();">MORE <font style="color: red">Wasters</font></a> <a href="#" id="wastersRemove" class="btn btn-lg btn-default" onclick="wastersRemove();">Leave <font style="color: red">Wasters</font> alone</a> </p>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <div class="inner cover">
-        <h1 class="cover-heading"><font style="color: red">Waste</font> Time Counter.</h1>
-        <p class="lead">Let's <font style="color: red">waste</font> together!</p>
-
-        <p>Number Of <font style="color: red">Wasters</font></p>
-        <p id="wastersCount" style="color:white;font-size: 16px;">1</p>
-
-        <div class="row">
-          <p id="timer" style="font-size: 26px;">TIMER</p>
-        </div>
-
-        <p class="lead">
-          <a href="#" id="wastersClick" class="btn btn-lg btn-default" onclick="watersAdd();">MORE <font style="color: red">Wasters</font></a>
-          <a href="#" id="wastersRemove" class="btn btn-lg btn-default" onclick="wastersRemove();">Leave <font style="color: red">Wasters</font> alone</a>
-        </p>
-      </div>
     </div>
-  </div>
-</div>
-
-<!-- Bootstrap core JavaScript
+    <!-- Bootstrap core JavaScript
 ================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="lib/js/vendor/jquery.min.js"><\/script>')</script>
-<script src="lib/js/bootstrap.min.js"></script>
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="lib/js/ie10-viewport-bug-workaround.js"></script>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+        window.jQuery || document.write('<script src="lib/js/vendor/jquery.min.js"><\/script>')
+    </script>
+    <script src="lib/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="lib/js/ie10-viewport-bug-workaround.js"></script>
 </body>
+
 </html>
